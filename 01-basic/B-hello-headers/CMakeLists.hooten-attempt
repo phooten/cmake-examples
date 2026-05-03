@@ -1,0 +1,14 @@
+cmake_minimum_required(VERSION 3.29)
+project (hello_project)
+
+# Create a library
+add_library(hello_lib)
+target_sources(hello_lib PRIVATE src/Hello.cpp)
+# TODO: need to add the include directory to the library target
+target_include_directories(hello_lib PUBLIC ${PROJECT_SOURCE_DIR}/include)
+
+
+# Create the Executable
+add_executable(hello_exe)
+target_sources(hello_exe PRIVATE src/main.cpp)
+target_link_libraries(hello_exe hello_lib)

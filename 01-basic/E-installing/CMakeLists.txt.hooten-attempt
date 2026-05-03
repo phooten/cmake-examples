@@ -1,0 +1,49 @@
+cmake_minimum_required(VERSION 3.26)
+project(hooten_exe)
+
+include(GNUInstallDirs)
+
+add_library(
+    hello_lib 
+    SHARED 
+        src/Hello.cpp
+)
+add_library(
+    hooten::hello_lib 
+    ALIAS 
+        hello_lib
+    )
+
+target_include_directories(
+    # hooten::hello_lib 
+    hello_lib
+    PUBLIC 
+        ${PROJECT_SOURCE_DIR}/include
+    )
+
+add_executable(hooten_exe src/main.cpp)
+target_link_libraries(hooten_exe hooten::hello_lib)
+set_target_properties(
+    hooten_exe 
+    PROPERTIES
+    INSTALL_RPATH "$ORIGIN"
+)
+
+set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR}/install)
+install(
+    TARGETS hooten_exe
+    DESTINATION ${CMAKE_INSTALL_BINDIR}
+    COMPONENT runtime
+    )
+install(
+    TARGETS hello_lib
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    COMPONENT runtime
+    )
+
+install(
+    DIRECTORY ${PROJECT_SOURCE_DIR}/include
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    COMPONENT development
+    )
